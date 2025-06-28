@@ -1,0 +1,15 @@
+import React from 'react'
+import Agent from "@/components/ui/Agent";
+
+const Page = () => {
+    return (
+
+        <>npm
+            <h3> Interview Generation</h3>
+            <Agent userName ="You" userId ="user1"  type="generate"/>
+
+        </>
+
+    )
+}
+export default Page
