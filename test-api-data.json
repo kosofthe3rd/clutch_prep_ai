@@ -1,0 +1,8 @@
+{
+  "type": "Technical",
+  "role": "Frontend Developer",
+  "level": "Junior",
+  "techstack": "React, TypeScript, Next.js, Tailwind CSS",
+  "amount": 5,
+  "userid": "test-user-123"
+} 

@@ -266,11 +266,11 @@
   }
 
   .card-cta {
-    @apply flex flex-row blue-gradient-dark rounded-3xl px-16 py-6 items-center justify-between max-sm:px-4;
+    @apply flex flex-row rounded-3xl px-16 py-3 items-center justify-between max-sm:px-4 bg-gray-800/80 backdrop-blur-lg shadow-xl border border-gray-700;
   }
 
   .interviews-section {
-    @apply flex flex-wrap gap-4 max-lg:flex-col w-full items-stretch;
+    @apply grid grid-cols-3 gap-8 w-full overflow-x-auto;
   }
 
   .interview-text {
@@ -330,5 +330,66 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes gradientBG {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.animate-gradient {
+  animation: gradientBG 12s ease-in-out infinite;
+}
+
+@keyframes darkBlueBG {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.dynamic-dark-bg {
+  background: linear-gradient(120deg, #000 0%, #0a0a23 40%, #1e2a78 60%, #000 100%);
+  background-size: 200% 200%;
+  animation: darkBlueBG 16s ease-in-out infinite;
+}
+
+@keyframes whiteToLightGreyText {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.animated-gradient-text {
+  background: linear-gradient(120deg, #bae6fd 0%, #1e2a78 60%, #bae6fd 100%);
+  background-size: 200% 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: blueMatchBGText 16s ease-in-out infinite;
+}
+
+@keyframes blueMatchBGText {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
   }
 }

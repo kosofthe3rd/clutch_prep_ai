@@ -1,0 +1,8 @@
+{
+  "type": "Behavioral",
+  "role": "Software Engineer",
+  "level": "Mid-level",
+  "techstack": "JavaScript, Node.js, Express, MongoDB",
+  "amount": 3,
+  "userid": "test-user-456"
+} 

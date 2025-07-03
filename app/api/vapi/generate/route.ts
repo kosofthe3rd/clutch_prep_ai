@@ -6,6 +6,24 @@ import { db } from "@/firebase/admin";
 export async function POST(request: Request) {
     console.log("🔹 Step 1: Received request");
 
+    // Check for required environment variables
+    if (!process.env.FIREBASE_PROJECT_ID || !process.env.FIREBASE_CLIENT_EMAIL || !process.env.FIREBASE_PRIVATE_KEY) {
+        console.error("❌ Missing Firebase Admin environment variables");
+        return Response.json({ 
+            success: false, 
+            error: "Server configuration error: Missing Firebase credentials" 
+        }, { status: 500 });
+    }
+
+    const googleApiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    if (!googleApiKey) {
+        console.error("❌ Missing Google API key");
+        return Response.json({ 
+            success: false, 
+            error: "Server configuration error: Missing Google API key (GOOGLE_GENERATIVE_AI_API_KEY)" 
+        }, { status: 500 });
+    }
+
     let body;
     try {
         body = await request.json();
@@ -23,7 +41,8 @@ export async function POST(request: Request) {
 
     let rawQuestions;
     try {
-        console.log("🔹 Step 3: Calling AI with prompt");
+        console.log("🔹 Step 3: Calling Google AI with prompt");
+        
         const { text } = await generateText({
             model: google("gemini-2.0-flash-001"),
             prompt: `Prepare questions for a job interview.
@@ -41,27 +60,35 @@ Thank you! <3`,
         });
 
         rawQuestions = text;
-        console.log("🔹 Step 4: Received AI response:", rawQuestions);
+        console.log("🔹 Step 4: Received Google AI response:", rawQuestions);
     } catch (err) {
-        console.error("❌ AI generation failed:", err);
-        return Response.json({ success: false, error: "AI generation failed" }, { status: 500 });
+        console.error("❌ Google AI generation failed:", err);
+        return Response.json({ 
+            success: false, 
+            error: "AI generation failed", 
+            details: err instanceof Error ? err.message : "Unknown error" 
+        }, { status: 500 });
     }
 
     let parsedQuestions;
     try {
         parsedQuestions = JSON.parse(rawQuestions);
         if (!Array.isArray(parsedQuestions)) throw new Error("Not an array");
-        console.log("🔹 Step 5: Parsed AI response into array");
+        console.log("🔹 Step 5: Parsed Google AI response into array");
     } catch (err) {
         console.error("❌ JSON parsing of questions failed:", rawQuestions);
-        return Response.json({ success: false, error: "Invalid AI response format" }, { status: 500 });
+        return Response.json({ 
+            success: false, 
+            error: "Invalid AI response format",
+            rawResponse: rawQuestions 
+        }, { status: 500 });
     }
 
     const interview = {
         role,
         type,
         level,
-        techstack: techstack ? techstack.split(",").map(s => s.trim()) : [],
+        techstack: techstack ? techstack.split(",").map((s: string) => s.trim()) : [],
         questions: parsedQuestions,
         userId: userid,
         finalized: true,
@@ -76,6 +103,10 @@ Thank you! <3`,
         return Response.json({ success: true }, { status: 200 });
     } catch (dbError) {
         console.error("❌ Firestore error:", dbError);
-        return Response.json({ success: false, error: "Database write failed" }, { status: 500 });
+        return Response.json({ 
+            success: false, 
+            error: "Database write failed",
+            details: dbError instanceof Error ? dbError.message : "Unknown database error"
+        }, { status: 500 });
     }
 }

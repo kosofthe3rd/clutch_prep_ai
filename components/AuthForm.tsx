@@ -22,17 +22,17 @@ type AuthFormProps = {
     type: string
 }
 
-const authFormSchema = (type : FormType) => {
+const authFormSchema = (type: 'sign-in' | 'sign-up') => {
     return z.object({
         name: type === 'sign-up' ?  z.string().min(3) : z.string().optional(),
         email: z.string().email(),
-        password: z.string().min(8).optional(),
+        password: z.string().min(8),
     })
 }
 // 3. Component definition
 const AuthForm = ({ type }: { type: string }) => {
     const router = useRouter()
-    const formSchema = authFormSchema(type);
+    const formSchema = authFormSchema(type as 'sign-in' | 'sign-up');
     const isSignIn = type === "sign-in"
 
     // 4. Setup useForm hook
@@ -108,7 +108,7 @@ const AuthForm = ({ type }: { type: string }) => {
                                 name="name"
                                 label="Name"
                                 placeholder="Enter your name"
-                                type="email"
+                                type="text"
                                 />
                             )}
 
