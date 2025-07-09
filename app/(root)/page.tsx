@@ -24,7 +24,7 @@ async function Home() {
       <section className="card-cta">
         <div className="flex flex-col items-start gap-4 max-w-lg text-left">
           <h1 className="text-5xl font-extrabold animated-gradient-text drop-shadow-lg mb-1">
-            No stress, just finesse.
+            No stress, just finesse — AI helps you impress.
           </h1>
           <div className="w-16 h-1 bg-gradient-to-r from-primary-200 via-blue-400 to-purple-400 rounded-full mb-2" />
           <p className="text-xl font-light italic text-primary-100 mb-4">
@@ -141,15 +141,6 @@ async function Home() {
             techstack="Node.js, Express"
             createdAt="2024-04-20"
           />
-          <InterviewCard
-            key="dummy3"
-            userId="dummyUser3"
-            interviewId="dummyInterview3"
-            role="Full Stack Developer"
-            type="System Design"
-            techstack="React, Node.js, AWS"
-            createdAt="2024-03-15"
-          />
         </div>
       </section>
 
@@ -190,15 +181,6 @@ async function Home() {
             type="Behavioral"
             techstack="Docker, Kubernetes"
             createdAt="2024-04-28"
-          />
-          <InterviewCard
-            key="dummy6"
-            userId="dummyUser6"
-            interviewId="dummyInterview6"
-            role="Mobile Developer"
-            type="Technical"
-            techstack="Flutter, Dart"
-            createdAt="2024-03-30"
           />
         </div>
       </section>

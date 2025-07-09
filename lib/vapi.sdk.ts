@@ -1,16 +1,6 @@
-import Vapi from '@vapi-ai/web'
+import Vapi from '@vapi-ai/web';
 
-console.log('🔍 DEBUG: Vapi import successful:', Vapi);
-console.log('🔍 DEBUG: Vapi constructor:', typeof Vapi);
+// Fix for Vapi constructor issue
+const VapiConstructor = (Vapi as any).default || Vapi;
+export const vapi = new VapiConstructor(process.env.NEXT_PUBLIC_VAPI_WEB_TOKEN!);
 
-let vapiInstance: any;
-
-try {
-    vapiInstance = new Vapi(process.env.NEXT_PUBLIC_VAPI_WEB_TOKEN!);
-    console.log('🔍 DEBUG: Vapi instance created:', vapiInstance);
-} catch (error) {
-    console.error('❌ ERROR: Failed to create Vapi instance:', error);
-    vapiInstance = null;
-}
-
-export const vapi = vapiInstance;
