@@ -6,7 +6,7 @@ An AI-powered interview practice platform built with Next.js, Firebase, and Vapi
 
 - 🤖 AI-powered interview practice with voice interaction
 - 🔐 User authentication with Firebase
-- 📝 Interview question generation using Google AI
+- 📝 Interview question generation using OpenAI
 - 🎯 Behavioral and technical interview questions
 - 📊 Interview history and progress tracking
 - 🎨 Modern, responsive UI with glassmorphism effects
@@ -18,7 +18,7 @@ An AI-powered interview practice platform built with Next.js, Firebase, and Vapi
 - Node.js 18+ 
 - Firebase project
 - Vapi account
-- Google AI API key
+- OpenAI API key
 
 ### Environment Setup
 
@@ -42,8 +42,8 @@ FIREBASE_PROJECT_ID=your_project_id
 FIREBASE_CLIENT_EMAIL=your_service_account_email
 FIREBASE_PRIVATE_KEY=your_private_key
 
-# Google AI (for interview question generation)
-GOOGLE_GENERATIVE_AI_API_KEY=your_google_ai_api_key
+# OpenAI (for interview question generation and feedback)
+OPENAI_API_KEY=your_openai_api_key
 ```
 
 ### Installation
@@ -77,7 +77,7 @@ To learn more about the technologies used:
 - [Next.js Documentation](https://nextjs.org/docs)
 - [Firebase Documentation](https://firebase.google.com/docs)
 - [Vapi Documentation](https://docs.vapi.ai/)
-- [Google AI Documentation](https://ai.google.dev/)
+- [OpenAI Documentation](https://platform.openai.com/docs)
 
 ## Deploy on Vercel
 
