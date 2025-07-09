@@ -28,6 +28,7 @@ Create a `.env.local` file in the root directory with the following variables:
 # Vapi Configuration (Required for AI interviews)
 NEXT_PUBLIC_VAPI_WEB_TOKEN=your_vapi_web_token_here
 NEXT_PUBLIC_VAPI_WORKFLOW_ID=your_vapi_workflow_id_here
+NEXT_PUBLIC_VAPI_ASSISTANT_ID=your_vapi_assistant_id_here
 
 # Firebase Configuration
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
@@ -67,8 +68,10 @@ To use the AI interview feature, you need to:
 1. Sign up at [Vapi Console](https://console.vapi.ai/)
 2. Create a new project
 3. Get your web token from the project settings
-4. Create a workflow for interview questions
-5. Add the token and workflow ID to your `.env.local` file
+4. Create a workflow for interview questions OR create an assistant
+5. Add the token and workflow ID/assistant ID to your `.env.local` file
+
+**Note:** The app will prioritize using the assistant ID if available, otherwise it will fall back to the workflow ID.
 
 ## Learn More
 

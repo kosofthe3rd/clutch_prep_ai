@@ -119,12 +119,25 @@ const Agent = ({
     setCallStatus(CallStatus.CONNECTING);
 
     if (type === "generate") {
-      await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!, {
-        variableValues: {
-          username: userName,
-          userid: userId,
-        },
-      });
+      // Try assistant ID first, fallback to workflow ID
+      if (process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID) {
+        await vapi.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID, {
+          variableValues: {
+            username: userName,
+            userid: userId,
+          },
+        });
+      } else if (process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID) {
+        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID, {
+          variableValues: {
+            username: userName,
+            userid: userId,
+          },
+        });
+      } else {
+        console.error("No VAPI assistant ID or workflow ID configured");
+        setCallStatus(CallStatus.INACTIVE);
+      }
     } else {
       let formattedQuestions = "";
       if (questions) {
@@ -133,11 +146,17 @@ const Agent = ({
           .join("\n");
       }
 
-    //   await vapi.start(interviewer, {
-    //     variableValues: {
-    //       questions: formattedQuestions,
-    //     },
-    //   });
+      // Use assistant ID for custom interviews
+      if (process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID) {
+        await vapi.start(process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID, {
+          variableValues: {
+            questions: formattedQuestions,
+          },
+        });
+      } else {
+        console.error("No VAPI assistant ID configured for custom interviews");
+        setCallStatus(CallStatus.INACTIVE);
+      }
     }
   };
 
