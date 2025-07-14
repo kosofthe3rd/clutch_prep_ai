@@ -7,7 +7,7 @@ import {Button} from "@/components/ui/button";
 import DisplayTechIcons from "@/components/DisplayTechIcons";
 
 interface InterviewCardProps {
-    interviewId: string;
+    id: string;
     userId: string;
     role: string;
     techstack: string;
@@ -15,7 +15,7 @@ interface InterviewCardProps {
     type: string;
 }
 
-const InterviewCard = ({ interviewId, userId, role, techstack, createdAt, type }: InterviewCardProps) => {
+const InterviewCard = ({ id, userId, role, techstack, createdAt, type }: InterviewCardProps) => {
     const feedback = null as Feedback | null;
     const normalizedType = /mix/gi.test(type) ? 'Mixed' : type;
     const formattedDate = dayjs(feedback?.createdAt || createdAt || Date.now()).format('MMMM-DD-YYYY');
@@ -62,8 +62,8 @@ const InterviewCard = ({ interviewId, userId, role, techstack, createdAt, type }
                     <Button className="btn-primary">
                         <Link href={feedback
 
-                            ? `/interview/${interviewId}/feedback}`
-                            : `/interview/${interviewId}`
+                            ? `/interview/${id}/feedback}`
+                            : `/interview/${id}`
                         }>
                             {feedback ? 'Checkk feedback' : 'View Interview '}
 
