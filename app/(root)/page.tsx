@@ -112,7 +112,7 @@ async function Home() {
               <InterviewCard
                 key={interview.id}
                 userId={user?.id || ''}
-                interviewId={interview.id}
+                id={interview.id}
                 role={interview.role}
                 type={interview.type}
                 techstack={Array.isArray(interview.techstack) ? interview.techstack.join(', ') : interview.techstack}
@@ -122,25 +122,6 @@ async function Home() {
           ) : (
             <p>You haven&apos;t taken any interviews yet</p>
           )}
-          {/* Dummy cards for visual fullness */}
-          <InterviewCard
-            key="dummy1"
-            userId="dummyUser1"
-            interviewId="dummyInterview1"
-            role="Frontend Developer"
-            type="Technical"
-            techstack="React, TypeScript"
-            createdAt="2024-05-01"
-          />
-          <InterviewCard
-            key="dummy2"
-            userId="dummyUser2"
-            interviewId="dummyInterview2"
-            role="Backend Engineer"
-            type="Behavioral"
-            techstack="Node.js, Express"
-            createdAt="2024-04-20"
-          />
         </div>
       </section>
 
@@ -163,25 +144,6 @@ async function Home() {
           ) : (
             <p>There are no interviews available</p>
           )}
-          {/* Dummy cards for visual fullness */}
-          <InterviewCard
-            key="dummy4"
-            userId="dummyUser4"
-            interviewId="dummyInterview4"
-            role="Data Scientist"
-            type="Technical"
-            techstack="Python, Pandas"
-            createdAt="2024-05-10"
-          />
-          <InterviewCard
-            key="dummy5"
-            userId="dummyUser5"
-            interviewId="dummyInterview5"
-            role="DevOps Engineer"
-            type="Behavioral"
-            techstack="Docker, Kubernetes"
-            createdAt="2024-04-28"
-          />
         </div>
       </section>
 

@@ -17,9 +17,6 @@ const NavBar = async () => {
       <div className="flex items-center gap-4">
         {isSignedIn ? (
           <>
-            <Button asChild variant="secondary">
-              <Link href="/interview">Start Interview</Link>
-            </Button>
             <Button asChild variant="outline">
               <Link href="/history">History</Link>
             </Button>
