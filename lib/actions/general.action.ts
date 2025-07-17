@@ -7,7 +7,7 @@ import { db } from "@/firebase/admin";
 import { feedbackSchema } from "@/constants";
 
 export async function createFeedback(params: CreateFeedbackParams) {
-  const { interviewId, userId, transcript, feedbackId } = params;
+  const { interviewId, userid, transcript, feedbackId } = params;
 
   try {
     const formattedTranscript = transcript
@@ -17,7 +17,7 @@ export async function createFeedback(params: CreateFeedbackParams) {
       )
       .join("");
 
-    const { object } = await generateObject({
+    const { object: {totalScore, categoryScores, strengths, areasForImprovement, finalAssessment} } = await generateObject({
       model: openai("gpt-4.1"),
       schema: feedbackSchema,
       prompt: `
@@ -38,8 +38,8 @@ export async function createFeedback(params: CreateFeedbackParams) {
 
     const feedback = {
       interviewId: interviewId,
-      userId: userId,
-      totalScore: object.totalScore,
+      userId: userid,
+      totalScore: Object.totalScore,
       categoryScores: object.categoryScores,
       strengths: object.strengths,
       areasForImprovement: object.areasForImprovement,
@@ -73,12 +73,12 @@ export async function getInterviewById(id: string): Promise<Interview | null> {
 export async function getFeedbackByInterviewId(
   params: GetFeedbackByInterviewIdParams
 ): Promise<Feedback | null> {
-  const { interviewId, userId } = params;
+  const { interviewId, userid } = params;
 
   const querySnapshot = await db
     .collection("feedback")
     .where("interviewId", "==", interviewId)
-    .where("userId", "==", userId)
+    .where("userid", "==", userid)
     .limit(1)
     .get();
 
@@ -88,16 +88,16 @@ export async function getFeedbackByInterviewId(
   return { id: feedbackDoc.id, ...feedbackDoc.data() } as Feedback;
 }
 
-export async function getLatestInterviews(
+export async function getLatestInterviews( 
   params: GetLatestInterviewsParams
 ): Promise<Interview[] | null> {
-  const { userId, limit = 20 } = params;
+  const { userid, limit = 20 } = params;
 
   const interviews = await db
     .collection("interviews")
     .orderBy("createdAt", "desc")
     .where("finalized", "==", true)
-    .where("userId", "!=", userId)
+    .where("userid", "!=", userid)
     .limit(limit)
     .get();
 
@@ -108,11 +108,11 @@ export async function getLatestInterviews(
 }
 
 export async function getInterviewsByUserId(
-  userId: string
+  userid: string
 ): Promise<Interview[] | null> {
   const interviews = await db
     .collection("interviews")
-    .where("userId", "==", userId)
+    .where("userid", "==", userid)
     .orderBy("createdAt", "desc")
     .get();
 

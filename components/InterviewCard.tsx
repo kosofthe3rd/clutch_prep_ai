@@ -8,14 +8,14 @@ import DisplayTechIcons from "@/components/DisplayTechIcons";
 
 interface InterviewCardProps {
     id: string;
-    userId: string;
+    userid: string;
     role: string;
     techstack: string;
     createdAt: string;
     type: string;
 }
 
-const InterviewCard = ({id, userId, role, techstack, createdAt, type }: InterviewCardProps) => {
+const InterviewCard = ({id, userid, role, techstack, createdAt, type }: InterviewCardProps) => {
     const feedback = null as Feedback | null;
     const normalizedType = /mix/gi.test(type) ? 'Mixed' : type;
     const formattedDate = dayjs(feedback?.createdAt || createdAt || Date.now()).format('MMMM-DD-YYYY');
@@ -57,7 +57,7 @@ const InterviewCard = ({id, userId, role, techstack, createdAt, type }: Intervie
                 </div>
                 <div className="flex flex-row justify-between">
 
-                    <DisplayTechIcons techStack={techstack} />
+                    <DisplayTechIcons techStack={techstack.split(',').map(t => t.trim())} />
 
                     <Button className="btn-primary">
                         <Link href={feedback

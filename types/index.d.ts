@@ -20,15 +20,15 @@ interface Interview {
   questions: string[];
   techstack: string[];
   createdAt: string;
-  userId: string;
+  userid: string;
   type: string;
   finalized: boolean;
 }
 
 interface CreateFeedbackParams {
   interviewId: string;
-  userId: string;
-  transcript: { role: string; content: string }[];
+  userid: string;
+  transcript: any;
   feedbackId?: string;
 }
 
@@ -63,11 +63,11 @@ interface RouteParams {
 
 interface GetFeedbackByInterviewIdParams {
   interviewId: string;
-  userId: string;
+  userid: string;
 }
 
 interface GetLatestInterviewsParams {
-  userId: string;
+  userid: string;
   limit?: number;
 }
 

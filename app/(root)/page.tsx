@@ -13,11 +13,11 @@ async function Home() {
 
   const [userInterviews, allInterview] = await Promise.all([
     user?.id ? getInterviewsByUserId(user.id) : null,
-    user?.id ? getLatestInterviews({ userId: user.id }) : null,
+    user?.id ? getLatestInterviews({ userid: user.id }) : null,
   ]);
 
-  const hasPastInterviews = userInterviews?.length! > 0;
-  const hasUpcomingInterviews = allInterview?.length! > 0;
+  const hasPastInterviews = userInterviews && userInterviews.length > 0;
+  const hasUpcomingInterviews = allInterview && allInterview.length > 0;
 
   return (
     <>
@@ -49,17 +49,17 @@ async function Home() {
         <h2 className="text-3xl font-bold mb-8">How it Works</h2>
         <div className="flex flex-wrap justify-center gap-8 w-full max-w-4xl">
           <div className="flex flex-col items-center max-w-xs">
-            <img src="/globe.svg" alt="Step 1" className="w-16 h-16 mb-4" />
+            <Image src="/globe.svg" alt="Step 1" width={64} height={64} className="mb-4" />
             <h3 className="text-xl font-semibold mb-2">Choose Your Role</h3>
             <p className="text-center text-light-100">Select the job or tech stack you want to practice for.</p>
           </div>
           <div className="flex flex-col items-center max-w-xs">
-            <img src="/robot.png" alt="Step 2" className="w-16 h-16 mb-4 rounded-full bg-white/80" />
+            <Image src="/robot.png" alt="Step 2" width={64} height={64} className="mb-4 rounded-full bg-white/80" />
             <h3 className="text-xl font-semibold mb-2">Practice with AI</h3>
             <p className="text-center text-light-100">Answer real interview questions and get instant feedback from AI.</p>
           </div>
           <div className="flex flex-col items-center max-w-xs">
-            <img src="/star.svg" alt="Step 3" className="w-16 h-16 mb-4" />
+            <Image src="/star.svg" alt="Step 3" width={64} height={64} className="mb-4" />
             <h3 className="text-xl font-semibold mb-2">Improve & Succeed</h3>
             <p className="text-center text-light-100">Track your progress and get ready to ace your next interview!</p>
           </div>
@@ -71,18 +71,18 @@ async function Home() {
         <h2 className="text-3xl font-bold mb-8">What Users Say</h2>
         <div className="flex flex-wrap justify-center gap-8 w-full max-w-4xl">
           <div className="bg-gray-800/80 p-6 rounded-xl shadow-lg max-w-sm flex flex-col items-center">
-            <img src="/user-avatar.png" alt="User 1" className="w-14 h-14 rounded-full mb-3" />
-            <p className="italic text-light-100 mb-2">“This app made me so much more confident for my interviews. The AI feedback is spot on!”</p>
+            <Image src="/user-avatar.png" alt="User 1" width={56} height={56} className="rounded-full mb-3" />
+            <p className="italic text-light-100 mb-2">"This app made me so much more confident for my interviews. The AI feedback is spot on!"</p>
             <span className="font-semibold text-primary-100">— Alex J.</span>
           </div>
           <div className="bg-gray-800/80 p-6 rounded-xl shadow-lg max-w-sm flex flex-col items-center">
-            <img src="/user-avatar.png" alt="User 2" className="w-14 h-14 rounded-full mb-3" />
-            <p className="italic text-light-100 mb-2">“I love how easy it is to practice for different tech roles. Highly recommend!”</p>
+            <Image src="/user-avatar.png" alt="User 2" width={56} height={56} className="rounded-full mb-3" />
+            <p className="italic text-light-100 mb-2">"I love how easy it is to practice for different tech roles. Highly recommend!"</p>
             <span className="font-semibold text-primary-100">— Priya S.</span>
           </div>
           <div className="bg-gray-800/80 p-6 rounded-xl shadow-lg max-w-sm flex flex-col items-center">
-            <img src="/user-avatar.png" alt="User 3" className="w-14 h-14 rounded-full mb-3" />
-            <p className="italic text-light-100 mb-2">“The instant feedback helped me improve fast. I landed my dream job!”</p>
+            <Image src="/user-avatar.png" alt="User 3" width={56} height={56} className="rounded-full mb-3" />
+            <p className="italic text-light-100 mb-2">"The instant feedback helped me improve fast. I landed my dream job!"</p>
             <span className="font-semibold text-primary-100">— Sam T.</span>
           </div>
         </div>
@@ -92,14 +92,14 @@ async function Home() {
       <section className="w-full flex flex-col items-center py-10">
         <h2 className="text-2xl font-bold mb-6">Practice for Top Companies</h2>
         <div className="flex flex-wrap justify-center gap-6 items-center">
-          <img src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" className="h-12" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" className="h-12" />
-          <img src="/covers/adobe.png" alt="Adobe" className="h-12" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" className="h-12" />
-          <img src="/covers/hostinger.png" alt="Hostinger" className="h-12" />
-          <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" alt="Pinterest" className="h-12" />
-          <img src="/covers/quora.png" alt="Quora" className="h-12" />
-          <img src="/covers/reddit.png" alt="Reddit" className="h-12" />
+          <Image src="https://upload.wikimedia.org/wikipedia/commons/a/a9/Amazon_logo.svg" alt="Amazon" width={96} height={48} />
+          <Image src="https://upload.wikimedia.org/wikipedia/commons/0/05/Facebook_Logo_%282019%29.png" alt="Facebook" width={96} height={48} />
+          <Image src="/covers/adobe.png" alt="Adobe" width={96} height={48} />
+          <Image src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify" width={96} height={48} />
+          <Image src="/covers/hostinger.png" alt="Hostinger" width={96} height={48} />
+          <Image src="https://upload.wikimedia.org/wikipedia/commons/0/08/Pinterest-logo.png" alt="Pinterest" width={96} height={48} />
+          <Image src="/covers/quora.png" alt="Quora" width={96} height={48} />
+          <Image src="/covers/reddit.png" alt="Reddit" width={96} height={48} />
         </div>
       </section>
 
@@ -111,11 +111,11 @@ async function Home() {
             userInterviews?.map((interview) => (
               <InterviewCard
                 key={interview.id}
-                userId={user?.id || ''}
+                userid={user?.id || ''}
                 id={interview.id}
                 role={interview.role}
                 type={interview.type}
-                techstack={Array.isArray(interview.techstack) ? interview.techstack.join(', ') : interview.techstack}
+                techstack={Array.isArray(interview.techstack) ? interview.techstack.join(', ') : (interview.techstack || '')}
                 createdAt={interview.createdAt}
               />
             ))
@@ -133,11 +133,11 @@ async function Home() {
             allInterview?.map((interview) => (
               <InterviewCard
                 key={interview.id}
-                userId={user?.id}
-                interviewId={interview.id}
+                userid={user?.id || ''}
+                id={interview.id}
                 role={interview.role}
                 type={interview.type}
-                techstack={interview.techstack}
+                techstack={Array.isArray(interview.techstack) ? interview.techstack.join(', ') : (interview.techstack || '')}
                 createdAt={interview.createdAt}
               />
             ))
@@ -150,9 +150,9 @@ async function Home() {
       {/* Footer Section */}
       <footer className="w-full py-8 flex flex-col items-center text-center text-light-100 mt-12 opacity-80">
         <div className="flex gap-4 mb-2">
-          <a href="/" className="hover:underline">Home</a>
-          <a href="/help" className="hover:underline">Help</a>
-          <a href="/about" className="hover:underline">About</a>
+          <Link href="/" className="hover:underline">Home</Link>
+          <Link href="/help" className="hover:underline">Help</Link>
+          <Link href="/about" className="hover:underline">About</Link>
         </div>
         <div className="text-sm">&copy; {new Date().getFullYear()} ClutchPrep-AI. All rights reserved.</div>
       </footer>
