@@ -36,6 +36,9 @@ const Agent = ({
   const [lastMessage, setLastMessage] = useState<string>("");
   const [generatedInterviewId, setGeneratedInterviewId] = useState<string | null>(null);
   const [callError, setCallError] = useState<string>("");
+  const [fallbackMode, setFallbackMode] = useState(false);
+  const [candidateAnswer, setCandidateAnswer] = useState("");
+  const [isReplying, setIsReplying] = useState(false);
 
   useEffect(() => {
     const onCallStart = () => {
@@ -79,8 +82,17 @@ const Agent = ({
 
     const onError = (error: Error) => {
       console.error("Vapi error:", error);
-      setCallError(error.message || "The AI interviewer could not connect. Please try again.");
-      setCallStatus(CallStatus.INACTIVE);
+      setCallError("Voice connection is unavailable, so text interview mode is active.");
+      setFallbackMode(true);
+      setCallStatus(CallStatus.ACTIVE);
+      setMessages((previous) =>
+        previous.length
+          ? previous
+          : [{
+              role: "assistant",
+              content: questions?.[0] || `Hi ${userName}! What role would you like to practice for today?`,
+            }]
+      );
     };
 
     vapi.on("call-start", onCallStart);
@@ -144,33 +156,68 @@ const Agent = ({
 
     try {
       if (type === "generate") {
-        const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
-        const workflowId = process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID;
-        const variables = { username: userName, userid: userId || "" };
-
-        if (assistantId) {
-          await vapi.start(assistantId, { variableValues: variables });
-        } else if (workflowId) {
-          await vapi.start(undefined, undefined, undefined, workflowId, {
-            variableValues: variables,
-          });
-        } else {
-          throw new Error("Vapi is not configured. Add an assistant or workflow ID.");
-        }
+        await vapi.start(interviewer, {
+          variableValues: {
+            username: userName,
+            questions:
+              "Ask the candidate for their target role, experience level, and preferred interview type, then conduct a short tailored mock interview.",
+          },
+        });
       } else {
         const formattedQuestions = (questions || [])
           .map((question) => `- ${question}`)
           .join("\n");
 
         await vapi.start(interviewer, {
-          variableValues: { questions: formattedQuestions },
+          variableValues: { username: userName, questions: formattedQuestions },
         });
       }
     } catch (error) {
       console.error("Unable to start Vapi call:", error);
-      setCallError(error instanceof Error ? error.message : "The AI interviewer could not connect. Please try again.");
-      setCallStatus(CallStatus.INACTIVE);
+      setCallError("Voice connection is unavailable, so text interview mode is active.");
+      setFallbackMode(true);
+      setCallStatus(CallStatus.ACTIVE);
+      setMessages((previous) =>
+        previous.length
+          ? previous
+          : [{
+              role: "assistant",
+              content: questions?.[0] || `Hi ${userName}! What role would you like to practice for today?`,
+            }]
+      );
     }
+  };
+
+  const requestFallbackReply = async (nextMessages: SavedMessage[]) => {
+    setIsReplying(true);
+    try {
+      const response = await fetch("/api/interviewer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ messages: nextMessages, questions, userName }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+      const reply: SavedMessage = { role: "assistant", content: data.message };
+      setMessages((previous) => [...previous, reply]);
+      if ("speechSynthesis" in window) {
+        window.speechSynthesis.speak(new SpeechSynthesisUtterance(data.message));
+      }
+    } catch {
+      setCallError("The AI interviewer is temporarily unavailable. Please try again.");
+    } finally {
+      setIsReplying(false);
+    }
+  };
+
+  const handleAnswer = async () => {
+    const answer = candidateAnswer.trim();
+    if (!answer || isReplying) return;
+    const userMessage: SavedMessage = { role: "user", content: answer };
+    const nextMessages = [...messages, userMessage];
+    setMessages(nextMessages);
+    setCandidateAnswer("");
+    await requestFallbackReply(nextMessages);
   };
   
   const handleDisconnect = () => {
@@ -231,6 +278,26 @@ const Agent = ({
         <p role="alert" className="text-center text-red-300 px-4">
           {callError}
         </p>
+      )}
+
+      {fallbackMode && callStatus === CallStatus.ACTIVE && (
+        <div className="w-full max-w-2xl mx-auto flex gap-2 px-4">
+          <input
+            value={candidateAnswer}
+            onChange={(event) => setCandidateAnswer(event.target.value)}
+            onKeyDown={(event) => event.key === "Enter" && handleAnswer()}
+            placeholder="Type your answer…"
+            aria-label="Your interview answer"
+            className="flex-1 rounded-full bg-dark-200 border border-gray-600 px-5 py-3 text-white"
+          />
+          <button
+            onClick={handleAnswer}
+            disabled={isReplying || !candidateAnswer.trim()}
+            className="btn-primary px-5 disabled:opacity-50"
+          >
+            {isReplying ? "Thinking…" : "Send"}
+          </button>
+        </div>
       )}
 
       <div className="w-full flex justify-center">
