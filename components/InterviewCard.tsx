@@ -8,14 +8,14 @@ import DisplayTechIcons from "@/components/DisplayTechIcons";
 
 interface InterviewCardProps {
     id: string;
-    userid: string;
+    userId: string;
     role: string;
     techstack: string;
     createdAt: string;
     type: string;
 }
 
-const InterviewCard = ({id, userid, role, techstack, createdAt, type }: InterviewCardProps) => {
+const InterviewCard = ({id, userId, role, techstack, createdAt, type }: InterviewCardProps) => {
     const feedback = null as Feedback | null;
     const normalizedType = /mix/gi.test(type) ? 'Mixed' : type;
     const formattedDate = dayjs(feedback?.createdAt || createdAt || Date.now()).format('MMMM-DD-YYYY');

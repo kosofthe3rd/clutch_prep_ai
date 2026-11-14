@@ -13,7 +13,7 @@ async function Home() {
 
   const [userInterviews, allInterview] = await Promise.all([
     user?.id ? getInterviewsByUserId(user.id) : null,
-    user?.id ? getLatestInterviews({ userid: user.id }) : null,
+    user?.id ? getLatestInterviews({ userId: user.id }) : null,
   ]);
 
   const hasPastInterviews = userInterviews && userInterviews.length > 0;
@@ -111,7 +111,7 @@ async function Home() {
             userInterviews?.map((interview) => (
               <InterviewCard
                 key={interview.id}
-                userid={user?.id || ''}
+                userId={user?.id || ''}
                 id={interview.id}
                 role={interview.role}
                 type={interview.type}
@@ -133,7 +133,7 @@ async function Home() {
             allInterview?.map((interview) => (
               <InterviewCard
                 key={interview.id}
-                userid={user?.id || ''}
+                userId={user?.id || ''}
                 id={interview.id}
                 role={interview.role}
                 type={interview.type}

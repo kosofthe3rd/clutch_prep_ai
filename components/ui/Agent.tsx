@@ -34,9 +34,12 @@ const Agent = ({
   const [messages, setMessages] = useState<SavedMessage[]>([]);
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [lastMessage, setLastMessage] = useState<string>("");
+  const [generatedInterviewId, setGeneratedInterviewId] = useState<string | null>(null);
+  const [callError, setCallError] = useState<string>("");
 
   useEffect(() => {
     const onCallStart = () => {
+      setCallError("");
       setCallStatus(CallStatus.ACTIVE);
     };
 
@@ -48,6 +51,19 @@ const Agent = ({
       if (message.type === "transcript" && message.transcriptType === "final") {
         const newMessage = { role: message.role, content: message.transcript };
         setMessages((prev) => [...prev, newMessage]);
+      }
+
+      // Handle function-call-result to get interview ID from workflow
+      if (message.type === "function-call-result" && type === "generate") {
+        try {
+          const result = message.functionCallResult?.result as any;
+          if (result?.interviewId) {
+            console.log("Interview created with ID:", result.interviewId);
+            setGeneratedInterviewId(result.interviewId);
+          }
+        } catch (error) {
+          console.error("Error parsing function call result:", error);
+        }
       }
     };
 
@@ -62,7 +78,9 @@ const Agent = ({
     };
 
     const onError = (error: Error) => {
-      console.log("Error:", error);
+      console.error("Vapi error:", error);
+      setCallError(error.message || "The AI interviewer could not connect. Please try again.");
+      setCallStatus(CallStatus.INACTIVE);
     };
 
     vapi.on("call-start", onCallStart);
@@ -107,42 +125,51 @@ const Agent = ({
 
     if (callStatus === CallStatus.FINISHED) {
       if (type === "generate") {
-        router.push("/");
+        // If we have a generated interview ID, redirect to it
+        if (generatedInterviewId) {
+          router.push(`/interview/${generatedInterviewId}`);
+        } else {
+          // Otherwise, redirect to home (interview might still be processing)
+          router.push("/");
+        }
       } else {
         handleGenerateFeedback(messages);
       }
     }
-  }, [messages, callStatus, feedbackId, interviewId, router, type, userId]);
+  }, [messages, callStatus, feedbackId, interviewId, router, type, userId, generatedInterviewId]);
 
   const handleCall = async () => {
+    setCallError("");
     setCallStatus(CallStatus.CONNECTING);
 
-    if (type === "generate") {
-      await vapi.start(
-        undefined,
-        undefined,
-        undefined,
-        process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,
-        {
-          variableValues: {
-            username: userName,
-            userid: userId,
-          },
+    try {
+      if (type === "generate") {
+        const assistantId = process.env.NEXT_PUBLIC_VAPI_ASSISTANT_ID;
+        const workflowId = process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID;
+        const variables = { username: userName, userid: userId || "" };
+
+        if (assistantId) {
+          await vapi.start(assistantId, { variableValues: variables });
+        } else if (workflowId) {
+          await vapi.start(undefined, undefined, undefined, workflowId, {
+            variableValues: variables,
+          });
+        } else {
+          throw new Error("Vapi is not configured. Add an assistant or workflow ID.");
         }
-      );
-    } else {
-      let formattedQuestions = "";
-      if (questions) {
-        formattedQuestions = questions
+      } else {
+        const formattedQuestions = (questions || [])
           .map((question) => `- ${question}`)
           .join("\n");
-      }
 
-      await vapi.start(interviewer, {
-        variableValues: {
-          questions: formattedQuestions,
-        },
-      });
+        await vapi.start(interviewer, {
+          variableValues: { questions: formattedQuestions },
+        });
+      }
+    } catch (error) {
+      console.error("Unable to start Vapi call:", error);
+      setCallError(error instanceof Error ? error.message : "The AI interviewer could not connect. Please try again.");
+      setCallStatus(CallStatus.INACTIVE);
     }
   };
   
@@ -198,6 +225,12 @@ const Agent = ({
             </p>
           </div>
         </div>
+      )}
+
+      {callError && (
+        <p role="alert" className="text-center text-red-300 px-4">
+          {callError}
+        </p>
       )}
 
       <div className="w-full flex justify-center">

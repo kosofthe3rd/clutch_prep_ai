@@ -5,7 +5,7 @@ const testInterviewGeneration = async () => {
     level: "Junior",
     techstack: "React, TypeScript, Next.js, Tailwind CSS",
     amount: 5,
-    userid: "test-user-123"
+    userId: "45tUB0tA2qWN8MX67bQEb9JeokP2"
   };
 
   try {
